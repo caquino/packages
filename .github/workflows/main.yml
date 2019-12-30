@@ -35,6 +35,7 @@ jobs:
         PACKAGE_FILE=$(find ./pkg -type f -name "*.deb" -printf "%f\n")
         echo "::set-output name=version::${PACKAGE_VERSION}"
         echo "::set-output name=file::${PACKAGE_FILE}"
+        ls -lah "pkg/${PACKAGE_FILE}"
 
     - name: Create release
       id: create_release
