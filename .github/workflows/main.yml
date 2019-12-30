@@ -10,15 +10,20 @@ jobs:
 
   steps:
     - name: Install dependencies
-      if: {{ job.container.image == "ubuntu-latest" }}
+      if: contains(job.<job_id>.runs-on, 'ubuntu')
       run: |
         sudo apt-get -y update
         sudo apt-get -y install build-essential ruby ruby-dev bundler
+
     - name: Install dependencies
-      if: {{ job.container.image == "centos-latest" }}
+      if: contains(job.<job_id>.runs-on, 'centos')
       run: |
         sudo yum instal ruby ruby-devel rubygem-bundler -y
         sudo yum groupinstall 'Development Tools' -y
+
     - name: Install fpm-cookery
       run: |
         sudo gem install fpm-cookery
+
+    - name: Checkout
+      uses: actions/checkout@v1
