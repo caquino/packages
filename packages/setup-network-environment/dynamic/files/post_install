@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+systemctl daemon-reload
+systemctl enable setup-network-environment
+systemctl start setup-network-environment
