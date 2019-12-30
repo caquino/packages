@@ -44,6 +44,29 @@ jobs:
         echo "::set-output name=content_type::${PACKAGE_MIME}"
         ls -lah "${PACKAGE_FULLFILE}"
 
+    - name: Checkout pages to repository
+      uses: actions/checkout@v2
+      with:
+        repository: 'caquino/caquino.github.io'
+        path: 'caquino.github.io'
+
+    - name: Copy package to repository
+      run: |
+        cd caquino.github.io
+        mkdir -p repository
+        cp ${{ steps.build_package.outputs.full_file }} repository
+        git config --local user.email "action@github.com"
+        git config --local user.name "Github Action"
+        git add .
+        git commit -m "Add package version ${{ steps.build_package.outputs.version }} for ${{ matrix.package }}" -a
+
+    - name: Push package to repository
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.PAT }}
+        directory: "caquino.github.io"
+        repository: "caquino/caquino.github.io"
+
     - name: Create release
       id: create_release
       uses: actions/create-release@v1.0.0
@@ -66,26 +89,4 @@ jobs:
         asset_name: ${{ steps.build_package.outputs.file }}
         asset_content_type: ${{ steps.build_package.outputs.content_type }}
 
-    - name: Checkout pages to repository
-      uses: actions/checkout@v2
-      with:
-        repository: 'caquino/caquino.github.io'
-        path: 'caquino.github.io'
-
-    - name: Copy package to repository
-      run: |
-        cd caquino.github.io
-        mkdir -p repository
-        cp ${{ steps.build_package.outputs.full_file }} repository
-        git config --local user.email "action@github.com"
-        git config --local user.name "Github Action"
-        git add .
-        git commit -m "Add package version ${{ steps.build_package.outputs.version }} for ${{ matrix.package }}" -a
-
-    - name: Push package to repository
-      uses: ad-m/github-push-action@master
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        directory: "caquino.github.io"
-        repository: "caquino/caquino.github.io"
 
