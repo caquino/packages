@@ -7,5 +7,5 @@ do
   fpm-cook
   cd -
 done
-mkdir build
+mkdir repository
 mv packages/*/*/pkg/*.deb repository/
