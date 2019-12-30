@@ -31,8 +31,8 @@ jobs:
         cd packages/${{ matrix.package }}/dynamic
         fpm-cook clean
         fpm-cook
-        PACKAGE_VERSION=$(find packages/${{ matrix.package }}/dynamic/pkg -type f -name "*.deb" | awk -F_ '{print $2}')
-        PACKAGE_FILE=$(find packages/${{ matrix.package }}/dynamic/pkg -type f -name "*.deb")
+        PACKAGE_VERSION=$(find ./pkg -type f -name "*.deb" | awk -F_ '{print $2}')
+        PACKAGE_FILE=$(find ./pkg -type f -name "*.deb")
         echo "::set-output name=version::${PACKAGE_VERSION}"
         echo "::set-output name=file::${PACKAGE_FILE}"
 
