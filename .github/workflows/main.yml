@@ -34,7 +34,7 @@ jobs:
         PACKAGE_VERSION=$(find packages/${{ matrix.package }}/dynamic/pkg -type f -name "*.deb" | awk -F_ '{print $2}')
         PACKAGE_FILE=$(find packages/${{ matrix.package }}/dynamic/pkg -type f -name "*.deb")
         echo "::set-output name=version::${PACKAGE_VERSION}"
-        echo "::set-output name=package-file::${PACKAGE_FILE}"
+        echo "::set-output name=file::${PACKAGE_FILE}"
 
     - name: Create release
       id: create_release
@@ -42,14 +42,10 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.reg }}
+        tag_name: ${{ matrix.package }}-${{ steps.build_package.outputs.version }}
+        release_name: Release ${{ steps.build_package.outputs.version }} for ${{ matrix.package }}
         draft: false
         prerelease: false
-
-    - name: Check result
-      run: |
-        ls -Ral
 
     - name: Upload release asset
       id: upload-release-asset
@@ -58,6 +54,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: packages/${{ matrix.package }}/dynamic/pkg/${{ steps.build_package.outputs.package-file }}
-        asset_name: ${{ steps.build_package.outpus.package-file }}
+        asset_path: packages/${{ matrix.package }}/dynamic/pkg/${{ steps.build_package.outputs.file }}
+        asset_name: ${{ steps.build_package.outpus.file }}
         asset_content_type: application/x-debian-package
