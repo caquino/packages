@@ -23,7 +23,7 @@ jobs:
     - name: Build package
       id: build_package
       run: |
-        build.sh
+        ./build.sh
 
     - name: Checkout pages to repository
       uses: actions/checkout@v2
@@ -34,4 +34,4 @@ jobs:
 
     - name: Push package to repository
       run: |
-        deploy.sh
+        ./deploy.sh
