@@ -19,7 +19,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get -y update
-        sudo apt-get -y install build-essential ruby ruby-dev bundler
+        sudo apt-get -y install build-essential ruby ruby-dev bundler git
 
     - name: Install fpm-cookery
       run: |
@@ -30,9 +30,8 @@ jobs:
 
     - name: Install golang
       if: contains(matrix.package, 'setup-network-environment')
-      uses: actions/setup-go@v1
-      with:
-        go-version: '1.13.5'
+      run: |
+        sudo apt-get -y install golang-go
 
     - name: Build package
       id: build_package
