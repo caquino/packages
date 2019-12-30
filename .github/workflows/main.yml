@@ -10,6 +10,8 @@ jobs:
       matrix:
         package:
         - terraform
+        - consul-template
+        - envconsul
 
     steps:
 
