@@ -60,7 +60,7 @@ jobs:
         git config --local user.name "Cassiano Aquino"
         git add .
         git commit -am "Add package version ${{ steps.build_package.outputs.version }} for ${{ matrix.package }}"
-        git push
+        git push -f
 
     - name: Create release
       id: create_release
