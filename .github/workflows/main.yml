@@ -28,11 +28,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v1
 
-    - name: Install golang
-      if: contains(matrix.package, 'setup-network-environment')
-      run: |
-        sudo apt-get -y install golang-go
-
     - name: Build package
       id: build_package
       run: |
