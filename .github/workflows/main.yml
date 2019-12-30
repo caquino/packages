@@ -26,7 +26,7 @@ jobs:
         sudo gem install fpm-cookery
 
     - name: Checkout
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
 
     - name: Build package
       id: build_package
@@ -65,3 +65,29 @@ jobs:
         asset_path: ${{ steps.build_package.outputs.full_file }}
         asset_name: ${{ steps.build_package.outputs.file }}
         asset_content_type: ${{ steps.build_package.outputs.content_type }}
+
+    - name: Checkout pages to repository
+      uses: actions/checkout@v2
+      with:
+        repository: 'caquino/caquino.github.io'
+        path: 'caquino.github.io'
+
+    - name: Configure git
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "Github Action"
+
+    - name: Copy package to repository
+      run: |
+        cd caquino.github.io
+        mkdir -p repository
+        cp ${{ steps.build_package.outputs.full_file }} repository
+        git commit -m "Add package version ${{ steps.build_package.outputs.version }} for ${{ matrix.package }}" -a
+
+    - name: Push package to repository
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        directory: "caquino.github.io"
+        repository: "caquino/caquino.github.io"
+
