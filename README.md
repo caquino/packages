@@ -10,3 +10,11 @@ echo "deb [trusted=yes] https://syshero.org/repository ./" |\
 ```
 
 After adding apt configuration, apt can be used to install any of the packages available.
+
+# Motivation
+
+This repository was created to package applications that are not available on Debian/Ubuntu and also to test `Github Actions`
+
+The package repository is hosted on `Github Pages`
+
+After commiting packages to this repository, `Github Actions` is triggered which build the packages and push to `Github Pages` repository.
