@@ -71,4 +71,3 @@ jobs:
         asset_path: ${{ steps.build_package.outputs.full_file }}
         asset_name: ${{ steps.build_package.outputs.file }}
         asset_content_type: ${{ steps.build_package.outputs.content_type }}
-
