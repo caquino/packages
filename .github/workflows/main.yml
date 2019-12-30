@@ -9,16 +9,16 @@ jobs:
       - centos-latest
 
   steps:
-    - name: Install dependencies (deb)
+    - name: Install dependencies -  deb
       if: {{ job.container.image == "ubuntu-latest" }}
       run: |
         sudo apt-get -y update
         sudo apt-get -y install build-essential ruby ruby-dev bundler
-    - name: Install dependencies (rpm)
+    - name: Install dependencies - rpm
       if: {{ job.container.image == "centos-latest" }}
       run: |
         sudo yum instal ruby ruby-devel rubygem-bundler -y
         sudo yum groupinstall 'Development Tools' -y
-    - name: Install fpm-cookery (all)
+    - name: Install fpm-cookery - all
       run: |
         sudo gem install fpm-cookery
