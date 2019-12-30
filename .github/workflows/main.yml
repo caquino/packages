@@ -8,7 +8,7 @@ jobs:
 
     strategy:
       matrix:
-        packages:
+        package:
         - terraform
 
     steps:
@@ -22,4 +22,13 @@ jobs:
     - name: Install fpm-cookery
       run: |
         sudo gem install fpm-cookery
+
+    - name: Build package
+      run: |
+        cd packages/${{ matrix.package }}/dynamic
+        fpm-cook clean
+        fpm-cook
+
+
+
 
