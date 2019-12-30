@@ -8,27 +8,27 @@ jobs:
     - ubuntu-latest
     - centos-latest
 
-  strategy:
-    matrix:
-      packages:
-      - terraform
+    strategy:
+      matrix:
+        packages:
+        - terraform
 
-  steps:
-  - uses: actions/checkout@v1
+    steps:
+    - uses: actions/checkout@v1
 
-  - name: Install dependencies
-    if: contains(job.<job_id>.runs-on, 'ubuntu')
-    run: |
-      sudo apt-get -y update
-      sudo apt-get -y install build-essential ruby ruby-dev bundler
+    - name: Install dependencies
+      if: contains(job.<job_id>.runs-on, 'ubuntu')
+      run: |
+        sudo apt-get -y update
+        sudo apt-get -y install build-essential ruby ruby-dev bundler
 
-  - name: Install dependencies
-    if: contains(job.<job_id>.runs-on, 'centos')
-    run: |
-      sudo yum instal ruby ruby-devel rubygem-bundler -y
-      sudo yum groupinstall 'Development Tools' -y
+    - name: Install dependencies
+      if: contains(job.<job_id>.runs-on, 'centos')
+      run: |
+        sudo yum instal ruby ruby-devel rubygem-bundler -y
+        sudo yum groupinstall 'Development Tools' -y
 
-  - name: Install fpm-cookery
-    run: |
-      sudo gem install fpm-cookery
+    - name: Install fpm-cookery
+      run: |
+        sudo gem install fpm-cookery
 
