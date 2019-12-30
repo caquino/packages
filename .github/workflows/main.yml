@@ -12,7 +12,6 @@ jobs:
         - terraform
 
     steps:
-    - uses: actions/checkout@v1
 
     - name: Install dependencies
       run: |
@@ -23,12 +22,39 @@ jobs:
       run: |
         sudo gem install fpm-cookery
 
+    - name: Checkout
+      uses: actions/checkout@v1
+
     - name: Build package
       run: |
         cd packages/${{ matrix.package }}/dynamic
         fpm-cook clean
         fpm-cook
 
+    - name: Create release
+      id: create_release
+      uses: actions/create-release@v1.0.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.reg }}
+        draft: false
+        prerelease: false
 
+    - name: Check result
+      run: |
+        ls -Ral
+
+    - name: Upload release asset
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1.0.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: packages/${{ matrix.package }}/dynamic/build/${{ matrix.package }}*.deb
+        asset_name: ${{ matrix.package }}.deb
+        asset_content_type: application/x-debian-package
 
 
