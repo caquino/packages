@@ -32,10 +32,14 @@ jobs:
         fpm-cook clean
         fpm-cook
         PACKAGE_VERSION=$(find ./pkg -type f -name "*.deb"  -printf "%f\n" | awk -F_ '{print $2}')
+        PACKAGE_FULLFILE=$(find ./pkg -type f -name "*.deb" -exec readlink -f {} \;)
         PACKAGE_FILE=$(find ./pkg -type f -name "*.deb" -printf "%f\n")
+        PACKAGE_MIME=$(file --mime-type ./pkg/${PACKAGE_FILE} | awk '{print $2}')
         echo "::set-output name=version::${PACKAGE_VERSION}"
         echo "::set-output name=file::${PACKAGE_FILE}"
-        ls -lah "pkg/${PACKAGE_FILE}"
+        echo "::set-output name=full_file::${PACKAGE_FULLFILE}"
+        echo "::set-output name=content_type::${PACKAGE_MIME}"
+        ls -lah "${PACKAGE_FULLFILE}"
 
     - name: Create release
       id: create_release
@@ -55,7 +59,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: packages/${{ matrix.package }}/dynamic/pkg/${{ steps.build_package.outputs.file }}
+        asset_path: ${{ steps.build_package.outputs.full_file }}
         asset_name: ${{ steps.build_package.outputs.file }}
-        asset_content_type: application/x-debian-package
+        asset_content_type: ${{ steps.build_package.outputs.content_type }}
 
