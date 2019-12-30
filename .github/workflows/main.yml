@@ -5,14 +5,17 @@ on: [push]
 jobs:
   build:
     runs-on:
-      - ubuntu-latest
-      - centos-latest
+    - ubuntu-latest
+    - centos-latest
 
   strategy:
     matrix:
-      packages: [ terraform ]
+      packages:
+      - terraform
 
   steps:
+  - uses: actions/checkout@v1
+
   - name: Install dependencies
     if: contains(job.<job_id>.runs-on, 'ubuntu')
     run: |
@@ -29,5 +32,3 @@ jobs:
     run: |
       sudo gem install fpm-cookery
 
-  - name: Checkout
-    uses: actions/checkout@v1
