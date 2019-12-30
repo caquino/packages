@@ -10,23 +10,11 @@ class SetupNetworkEnvironment < FPM::Cookery::Recipe
   version     JSON.parse(URI.parse("https://api.github.com/repos/kelseyhightower/setup-network-environment/releases/latest").read)['tag_name']
   revision    0
 
-  source      'https://github.com/kelseyhightower/setup-network-environment.git',
-    :with => 'git',
-    :tag => "#{version}"
-
-  platforms [:debian, :ubuntu] do
-    build_depends 'git', 'golang-go'
-  end
-
-  platforms :centos do
-    build_depends 'epel-release', 'git', 'golang'
-  end
+  source "https://github.com/kelseyhightower/setup-network-environment/releases/download/#{version}/setup-network-environment"
 
   post_install 'files/post_install'
 
   def build
-    safesystem "go get -d ./..."
-    safesystem "go build ./..."
   end
 
   def install
