@@ -6,20 +6,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        package:
-        - terraform
-        - consul-template
-        - envconsul
-        - setup-network-environment
-
     steps:
 
     - name: Install dependencies
       run: |
         sudo apt-get -y update
-        sudo apt-get -y install build-essential ruby ruby-dev bundler git
+        sudo apt-get -y install build-essential ruby ruby-dev bundler git dpkg-dev
 
     - name: Install fpm-cookery
       run: |
@@ -31,18 +23,7 @@ jobs:
     - name: Build package
       id: build_package
       run: |
-        cd packages/${{ matrix.package }}/dynamic
-        fpm-cook clean
-        fpm-cook
-        PACKAGE_VERSION=$(find ./pkg -type f -name "*.deb"  -printf "%f\n" | awk -F_ '{print $2}')
-        PACKAGE_FULLFILE=$(find ./pkg -type f -name "*.deb" -exec readlink -f {} \;)
-        PACKAGE_FILE=$(find ./pkg -type f -name "*.deb" -printf "%f\n")
-        PACKAGE_MIME=$(file --mime-type ./pkg/${PACKAGE_FILE} | awk '{print $2}')
-        echo "::set-output name=version::${PACKAGE_VERSION}"
-        echo "::set-output name=file::${PACKAGE_FILE}"
-        echo "::set-output name=full_file::${PACKAGE_FULLFILE}"
-        echo "::set-output name=content_type::${PACKAGE_MIME}"
-        ls -lah "${PACKAGE_FULLFILE}"
+        build.sh
 
     - name: Checkout pages to repository
       uses: actions/checkout@v2
@@ -53,35 +34,4 @@ jobs:
 
     - name: Push package to repository
       run: |
-        cd caquino.github.io
-        mkdir -p repository
-        cp ${{ steps.build_package.outputs.full_file }} repository
-        git config --local user.email "caquino@users.noreply.github.com"
-        git config --local user.name "Cassiano Aquino"
-        git add .
-        git commit -am "Add package version ${{ steps.build_package.outputs.version }} for ${{ matrix.package }}"
-        git push -f
-
-    - name: Create release
-      id: create_release
-      uses: actions/create-release@v1.0.0
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ matrix.package }}-${{ steps.build_package.outputs.version }}
-        release_name: Release ${{ steps.build_package.outputs.version }} for ${{ matrix.package }}
-        draft: false
-        prerelease: false
-
-    - name: Upload release asset
-      id: upload-release-asset
-      uses: actions/upload-release-asset@v1.0.1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ${{ steps.build_package.outputs.full_file }}
-        asset_name: ${{ steps.build_package.outputs.file }}
-        asset_content_type: ${{ steps.build_package.outputs.content_type }}
-
-
+        deploy.sh
