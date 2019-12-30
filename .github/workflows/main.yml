@@ -79,6 +79,7 @@ jobs:
         cp ${{ steps.build_package.outputs.full_file }} repository
         git config --local user.email "action@github.com"
         git config --local user.name "Github Action"
+        git add .
         git commit -m "Add package version ${{ steps.build_package.outputs.version }} for ${{ matrix.package }}" -a
 
     - name: Push package to repository
