@@ -1,5 +1,4 @@
 class SetupNetworkEnvironment < FPM::Cookery::Recipe
-  GOPACKAGE = 'github.com/kelseyhightower/setup-network-environment/'
   name        'setup-network-environment'
   description 'Create an environment file with system networking information.'
   homepage    'https://github.com/kelseyhightower/setup-network-environment'
@@ -26,21 +25,13 @@ class SetupNetworkEnvironment < FPM::Cookery::Recipe
   post_install 'files/post_install'
 
   def build
-    pkgdir = builddir("gobuild/src/#{GOPACKAGE}")
-    mkdir_p pkgdir
-    cp_r Dir["*"], pkgdir
-    ENV["GOPATH"] = [
-      builddir("gobuild/src/#{GOPACKAGE}/Godeps/_workspace"),
-      builddir("gobuild")
-    ].join(":")
-    safesystem "go version"
-    safesystem "go env"
-    safesystem "go get -v #{GOPACKAGE}/..."
+    safesystem "go get -d ./..."
+    safesystem "go build ./..."
   end
 
   def install
     lib('systemd/system').install workdir('files/usr/lib/systemd/system/setup-network-environment.service')
-    bin.install builddir("gobuild/bin/setup-network-environment")
+    bin.install "setup-network-environment"
   end
 
 end
