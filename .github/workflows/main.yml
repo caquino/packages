@@ -49,23 +49,18 @@ jobs:
       with:
         repository: 'caquino/caquino.github.io'
         path: 'caquino.github.io'
+        token: ${{ secrets.PAT }}
 
-    - name: Copy package to repository
+    - name: Push package to repository
       run: |
         cd caquino.github.io
         mkdir -p repository
         cp ${{ steps.build_package.outputs.full_file }} repository
-        git config --local user.email "action@github.com"
-        git config --local user.name "Github Action"
+        git config --local user.email "caquino@users.noreply.github.com"
+        git config --local user.name "Cassiano Aquino"
         git add .
-        git commit -m "Add package version ${{ steps.build_package.outputs.version }} for ${{ matrix.package }}" -a
-
-    - name: Push package to repository
-      uses: ad-m/github-push-action@master
-      with:
-        github_token: ${{ secrets.PAT }}
-        directory: "caquino.github.io"
-        repository: "caquino/caquino.github.io"
+        git commit -am "Add package version ${{ steps.build_package.outputs.version }} for ${{ matrix.package }}"
+        git push
 
     - name: Create release
       id: create_release
