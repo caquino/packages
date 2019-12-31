@@ -19,7 +19,8 @@ class SetupNetworkEnvironment < FPM::Cookery::Recipe
 
   def install
     lib('systemd/system').install workdir('files/usr/lib/systemd/system/setup-network-environment.service')
-    bin.install "setup-network-environment"
+    chmod 0555, 'setup-network-environment'
+    bin.install 'setup-network-environment'
   end
 
 end
