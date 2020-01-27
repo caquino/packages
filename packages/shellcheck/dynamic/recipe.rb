@@ -5,10 +5,13 @@ class Shellcheck < FPM::Cookery::Recipe
   section     'admin'
 
   require     'open-uri'
-  version     JSON.parse(URI.parse("https://api.github.com/repos/koalaman/shellcheck/tags").read).first['name']
+  fversion =  JSON.parse(URI.parse("https://api.github.com/repos/koalaman/shellcheck/tags").read).first['name']
+  fversion[0] = ''
+
+  version     fversion
   revision    0
 
-  source      "https://storage.googleapis.com/shellcheck/shellcheck-#{version}.linux.x86_64.tar.xz"
+  source      "https://storage.googleapis.com/shellcheck/shellcheck-v#{version}.linux.x86_64.tar.xz"
 
   def build
   end
@@ -17,4 +20,3 @@ class Shellcheck < FPM::Cookery::Recipe
     bin.install 'shellcheck'
   end
 end
-
