@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 mkdir -p caquino.github.io/repository
+rm -fv caquino.github.io/repository/*
 cp repository/* caquino.github.io/repository
 cd caquino.github.io/repository
 dpkg-scanpackages . | gzip -c9 > Packages.gz
