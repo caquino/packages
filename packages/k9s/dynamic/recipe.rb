@@ -10,7 +10,7 @@ class K9s < FPM::Cookery::Recipe
   version     JSON.parse(URI.parse("https://api.github.com/repos/derailed/k9s/releases").read).first['tag_name'][1..-1]
   revision    0
 
-  source "https://github.com/derailed/k9s/releases/download/#{version}/k9s_Linux_x86_64.tar.gz"
+  source "https://github.com/derailed/k9s/releases/download/v#{version}/k9s_Linux_x86_64.tar.gz"
 
   def build
   end
