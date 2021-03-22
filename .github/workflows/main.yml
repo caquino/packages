@@ -35,6 +35,7 @@ jobs:
       with:
         repository: 'caquino/caquino.github.io'
         path: 'caquino.github.io'
+        token: ${{ secrets.PAT }}
 
     - name: Push package to repository
       run: |
