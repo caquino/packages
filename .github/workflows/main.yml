@@ -16,7 +16,6 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-
     - name: Install dependencies
       run: |
         sudo apt-get -y update
@@ -119,7 +118,6 @@ jobs:
               - "project:${{ github.repository }}"
               - "branch:${{ github.head_ref }}"
               - "status:cancelled"
-
 
   metrics:
     runs-on: ubuntu-latest
