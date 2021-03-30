@@ -1,5 +1,9 @@
 name: CI
 
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  DATADOG_TOKEN: ${{ secrets.DATADOG_TOKEN }}
+
 on:
   push:
     branches:
@@ -40,3 +44,17 @@ jobs:
     - name: Push package to repository
       run: |
         ./deploy.sh
+
+  metrics:
+    runs-on: ubuntu-latest
+    name: Collect Metrics
+    needs: [build]
+    if: always()
+
+    steps:
+
+    - name: Collect metrics
+      users: konsentus/action.collect-build-metrics@v1.0
+      with:
+        send_to_dd: 'true'
+        datadog_url_location: 'com'
