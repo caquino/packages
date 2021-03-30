@@ -54,7 +54,7 @@ jobs:
     steps:
 
     - name: Collect metrics
-      users: konsentus/action.collect-build-metrics@v1.0
+      uses: konsentus/action.collect-build-metrics@v1.0
       with:
         send_to_dd: 'true'
         datadog_url_location: 'com'
