@@ -46,7 +46,7 @@ jobs:
         ./deploy.sh
 
     - name: Submit metrics
-      uses: masci/datagog@v1
+      uses: masci/datadog@v1
       with:
         api-key: ${{ secrets.DATADOG_TOKEN }}
         metrics: |
