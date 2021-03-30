@@ -54,7 +54,7 @@ jobs:
     steps:
 
     - name: Collect metrics
-      uses: konsentus/action.collect-build-metrics@v1.0.0
+      uses: konsentus/action.collect-build-metrics@v1.0.1
       with:
         send_to_dd: 'true'
         save_to_fs: 'true'
