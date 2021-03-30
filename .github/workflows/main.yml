@@ -12,11 +12,11 @@ on:
     - cron: '0 11 * * *'
 
 jobs:
-  build:
+  deps:
+    name: Install Dependencies
     runs-on: ubuntu-latest
 
     steps:
-
     - name: Install dependencies
       run: |
         sudo apt-get -y update
@@ -26,14 +26,20 @@ jobs:
       run: |
         sudo gem install fpm-cookery
 
+  checkout:
+    name: Checkout repository
     - name: Checkout
       uses: actions/checkout@v2
 
+  build:
+    name: Build packages
     - name: Build package
       id: build_package
       run: |
         ./build.sh
 
+  deploy:
+    name: Deploy to destination
     - name: Checkout pages to repository
       uses: actions/checkout@v2
       with:
@@ -54,7 +60,7 @@ jobs:
     steps:
 
     - name: Collect metrics
-      uses: konsentus/action.collect-build-metrics@v1.0
+      uses: konsentus/action.collect-build-metrics@v1.0.0
       with:
         send_to_dd: 'true'
         datadog_url_location: 'com'
