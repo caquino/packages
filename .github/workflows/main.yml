@@ -14,7 +14,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    
     steps:
 
     - name: Install dependencies
@@ -45,6 +45,33 @@ jobs:
       run: |
         ./deploy.sh
 
+    - name: Submit metrics
+      uses: masci/datagog@v1
+      with:
+        api-key: ${{ secrets.DATADOG_TOKEN }}
+        metrics: |
+          - type: "count"
+            name: "ci.runs.count"
+            value: 1.0
+            host: ${{ github.repository_owner }}
+            tags:
+              - "project:${{ github.repository }}"
+              - "branch:${{ github.head_ref }}"
+
+    - name: Submit failure event
+      if: failure()
+      uses: masci/datadog@v1
+      with:
+        api-key: ${{ secrets.DATADOG_TOKEN }}
+        events: |
+          - title: "Failed build"
+            text: "Branch ${{ github.head_ref }} failed to build"
+            alert_type: "error"
+            host: ${{ github.repository_owner }}
+            tags:
+              - "project:${{ github.repository }}"
+              - "branch:${{ github.head_ref }}"
+
   metrics:
     runs-on: ubuntu-latest
     name: Collect Metrics
@@ -52,17 +79,16 @@ jobs:
     if: always()
 
     steps:
+      - name: Collect metrics
+        uses: konsentus/action.collect-build-metrics@v1.0.1
+        with:
+          send_to_dd: 'true'
+          save_to_fs: 'true'
+          datadog_url_location: 'com'
+          filename: 'build-metrics.json'
 
-    - name: Collect metrics
-      uses: konsentus/action.collect-build-metrics@v1.0.1
-      with:
-        send_to_dd: 'true'
-        save_to_fs: 'true'
-        datadog_url_location: 'com'
-        filename: 'build-metrics.json'
-
-    - name: Upload to artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: build-metrics
-        path: build-metrics.json
+      - name: Upload to artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-metrics
+          path: build-metrics.json
