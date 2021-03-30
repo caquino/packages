@@ -17,39 +17,44 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Install dependencies
-      run: |
-        sudo apt-get -y update
-        sudo apt-get -y install build-essential ruby ruby-dev bundler git dpkg-dev
+      - name: Install dependencies
+        run: |
+          sudo apt-get -y update
+          sudo apt-get -y install build-essential ruby ruby-dev bundler git dpkg-dev
 
-    - name: Install fpm-cookery
-      run: |
-        sudo gem install fpm-cookery
+      - name: Install fpm-cookery
+        run: |
+          sudo gem install fpm-cookery
 
   checkout:
     name: Checkout repository
-    - name: Checkout
-      uses: actions/checkout@v2
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
 
   build:
     name: Build packages
-    - name: Build package
-      id: build_package
-      run: |
-        ./build.sh
+
+    steps:
+      - name: Build package
+        run: |
+          ./build.sh
 
   deploy:
     name: Deploy to destination
-    - name: Checkout pages to repository
-      uses: actions/checkout@v2
-      with:
-        repository: 'caquino/caquino.github.io'
-        path: 'caquino.github.io'
-        token: ${{ secrets.PAT }}
+    
+    steps:
+      - name: Checkout pages to repository
+        uses: actions/checkout@v2
+        with:
+          repository: 'caquino/caquino.github.io'
+          path: 'caquino.github.io'
+          token: ${{ secrets.PAT }}
 
-    - name: Push package to repository
-      run: |
-        ./deploy.sh
+      - name: Push package to repository
+        run: |
+          ./deploy.sh
 
   metrics:
     runs-on: ubuntu-latest
