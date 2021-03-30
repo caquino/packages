@@ -57,4 +57,12 @@ jobs:
       uses: konsentus/action.collect-build-metrics@v1.0.0
       with:
         send_to_dd: 'true'
+        save_to_fs: 'true'
         datadog_url_location: 'com'
+        filename: 'build-metrics.json'
+
+    - name: Upload to artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: build-metrics
+        path: build-metrics.json
