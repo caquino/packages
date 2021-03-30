@@ -46,6 +46,7 @@ jobs:
         ./deploy.sh
 
     - name: Submit metrics
+      if: success()
       uses: masci/datadog@v1
       with:
         api-key: ${{ secrets.DATADOG_TOKEN }}
@@ -57,6 +58,37 @@ jobs:
             tags:
               - "project:${{ github.repository }}"
               - "branch:${{ github.head_ref }}"
+              - "status:success"
+
+    - name: Submit failure metrics
+      if: failure()
+      uses: masci/datadog@v1
+      with:
+        api-key: ${{ secrets.DATADOG_TOKEN }}
+        metrics: |
+          - type: "count"
+            name: "ci.runs.count"
+            value: 1.0
+            host: ${{ github.repository_owner }}
+            tags:
+              - "project:${{ github.repository }}"
+              - "branch:${{ github.head_ref }}"
+              - "status:failure"
+    
+    - name: Submit cancelled metrics
+      if: cancelled()
+      uses: masci/datadog@v1
+      with:
+        api-key: ${{ secrets.DATADOG_TOKEN }}
+        metrics: |
+          - type: "count"
+            name: "ci.runs.count"
+            value: 1.0
+            host: ${{ github.repository_owner }}
+            tags:
+              - "project:${{ github.repository }}"
+              - "branch:${{ github.head_ref }}"
+              - "status:cancelled"
 
     - name: Submit failure event
       if: failure()
@@ -71,6 +103,23 @@ jobs:
             tags:
               - "project:${{ github.repository }}"
               - "branch:${{ github.head_ref }}"
+              - "status:failure"
+
+    - name: Submit cancelled event
+      if: cancelled()
+      uses: masci/datadog@v1
+      with:
+        api-key: ${{ secrets.DATADOG_TOKEN }}
+        events: |
+          - title: "Cancelled build"
+            text: "Branch ${{ github.head_ref }} cancelled build"
+            alert_type: "warning"
+            host: ${{ github.repository_owner }}
+            tags:
+              - "project:${{ github.repository }}"
+              - "branch:${{ github.head_ref }}"
+              - "status:cancelled"
+
 
   metrics:
     runs-on: ubuntu-latest
