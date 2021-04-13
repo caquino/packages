@@ -1,0 +1,8 @@
+{
+    "notifications": {
+        "webhooks": [
+            "https://www.mydestination.com/receiver/",
+            "https://www.example.com/receiver/v1/"
+        ]
+    }
+}
